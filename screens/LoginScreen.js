@@ -7,6 +7,7 @@ class LoginScreen extends React.Component {
     super(props);
 
     this.loginUsingLocalServer = this.loginUsingLocalServer.bind(this);
+    this.loginUsingGoogle = this.loginUsingGoogle.bind(this);
   }
   static navigationOptions = {
     title: 'Login Screen',
@@ -18,20 +19,33 @@ class LoginScreen extends React.Component {
       'http://vps760053.ovh.net/_configuration/Warehouse2',
     );
     const configuration = await response.json();
-    // const manager = new OAuthManager(configuration.client_id);
-    // manager.addProvider({
-    //   Warehouse: {
-    //     auth_version: '2.0',
-    //     authorize_url:
-    //   },
-    // });
-    console.debug(JSON.stringify(configuration));
+
+    const manager = new OAuthManager('Warehouse2');
+
+    manager.addProvider({
+      warehouse2: {
+        auth_version: '2.0',
+        authorize_url: 'http://vps760053.ovh.net/connect/authorize',
+        access_token_url: 'http://vps760053.ovh.net/connect/token',
+        callback_url: 'http://localhost/warehouse2',
+      },
+    });
+
+    manager
+      .authorize('warehouse2', {scopes: 'email'})
+      .then(resp => {
+        this.props.navigation.navigate('Products', {
+          accessToken: resp.response.credentials.accessToken,
+        });
+      })
+      .catch(err => console.debug(err));
+
     console.debug('end loginUsingLocalServer');
   }
 
   async loginUsingGoogle() {
     console.debug('start loginUsingGoogle');
-    const manager = new OAuthManager('firestackexample');
+    const manager = new OAuthManager('Warehouse2');
     manager.configure({
       google: {
         callback_url: 'http://vps760053.ovh.net/signin-google',
@@ -43,10 +57,11 @@ class LoginScreen extends React.Component {
     });
 
     manager
-      .authorize('google', {scopes: 'profile'})
+      .authorize('google', {scopes: 'email'})
       .then(resp => {
-        console.debug(JSON.stringify(resp));
-        this.props.navigation.navigate('Products', {token: resp.token});
+        this.props.navigation.navigate('Products', {
+          accessToken: resp.response.credentials.accessToken,
+        });
       })
       .catch(err => console.debug(err));
     console.debug('end loginUsingGoogle');
