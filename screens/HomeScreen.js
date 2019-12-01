@@ -1,14 +1,16 @@
 import React from 'react';
-import {Button} from 'react-native';
+import {WebView} from 'react-native-webview';
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: 'Home',
+    header: null,
   };
   render() {
-    const {navigate} = this.props.navigation;
     return (
-      <Button title="Go to login screen" onPress={() => navigate('Login')} />
+      <WebView
+        source={{uri: 'http://vps760053.ovh.net/Identity/Account/Login'}}
+        userAgent="Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+      />
     );
   }
 }
