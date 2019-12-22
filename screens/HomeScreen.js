@@ -50,9 +50,15 @@ class HomeScreen extends React.Component {
   }
 
   updateProduct(item) {
+    console.log(item);
     var data = this.state.data;
     var oldItem = data.filter(x => x.id === item.id)[0];
-    data[data.indexOf(oldItem)] = item;
+    if (item.status === 'deleted') {
+      delete data[data.indexOf(oldItem)];
+    } else {
+      data[data.indexOf(oldItem)] = item;
+    }
+
     this.setState({data: data});
   }
 }

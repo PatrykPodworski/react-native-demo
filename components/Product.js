@@ -6,6 +6,7 @@ class Product extends React.Component {
     super(props);
     this.incrementProduct = this.incrementProduct.bind(this);
     this.decrementProduct = this.decrementProduct.bind(this);
+    this.deleteProduct = this.deleteProduct.bind(this);
   }
   render() {
     var item = this.props.item;
@@ -18,7 +19,7 @@ class Product extends React.Component {
           <Button title="+" onPress={this.incrementProduct} />
           <Button title="-" onPress={this.decrementProduct} />
           <Button title="Edit" />
-          <Button title="Delete" />
+          <Button title="Delete" onPress={this.deleteProduct} />
         </View>
       </View>
     );
@@ -43,6 +44,18 @@ class Product extends React.Component {
     })
       .then(() => {
         item.quantity--;
+        this.props.update(item);
+      })
+      .catch(err => console.log(err));
+  }
+
+  deleteProduct() {
+    var item = this.props.item;
+    fetch(`http://192.168.0.54/api/products/${item.id}`, {
+      method: 'DELETE',
+    })
+      .then(() => {
+        item.status = 'deleted';
         this.props.update(item);
       })
       .catch(err => console.log(err));
