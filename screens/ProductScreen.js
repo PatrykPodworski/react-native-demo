@@ -72,7 +72,6 @@ class ProductsScreen extends React.Component {
   }
 
   saveProduct() {
-    console.log(this.state);
     if (this.state.id != null) {
       this.editProduct();
       return;
@@ -83,26 +82,36 @@ class ProductsScreen extends React.Component {
   createProduct() {
     const {navigate} = this.props.navigation;
     var item = this.state;
-
-    fetch('http://10.0.75.1/api/products', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(item),
-    })
-      .then(resp => {
+    if (this.state.offline) {
+      AsyncStorage.getItem('products').then(value => {
+        var data = JSON.parse(value);
+        item.status = 'edited';
+        item.quantity = 0;
+        data.push(item);
+        AsyncStorage.setItem('products', JSON.stringify(data));
         navigate('Home', {isRefreshRequired: true});
+      });
+    } else {
+      fetch('http://10.0.75.1/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(item),
       })
-      .catch(err => console.log(err));
+        .then(resp => {
+          navigate('Home', {isRefreshRequired: true});
+        })
+        .catch(err => console.log(err));
+    }
   }
 
   editProduct() {
     const {navigate} = this.props.navigation;
+    var item = this.state;
     if (this.state.offline) {
       AsyncStorage.getItem('products').then(value => {
         var data = JSON.parse(value);
-        var item = this.state;
         var oldItem = data.filter(x => x.id === item.id)[0];
         item.status = 'edited';
         item.quantity = oldItem.quantity;
@@ -112,8 +121,6 @@ class ProductsScreen extends React.Component {
         navigate('Home', {isRefreshRequired: true});
       });
     } else {
-      var item = this.state;
-      console.log(item);
       fetch(`http://10.0.75.1/api/products/${item.id}`, {
         method: 'PUT',
         headers: {

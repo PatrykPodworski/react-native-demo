@@ -35,7 +35,10 @@ class HomeScreen extends React.Component {
           title={this.state.offline ? 'Offline' : 'Online'}
           onPress={this.toggleMode}
         />
-        <Button title="Add new product" onPress={() => navigate('Product')} />
+        <Button
+          title="Add new product"
+          onPress={() => navigate('Product', {offline: this.state.offline})}
+        />
         <Button
           title={this.state.offline ? 'Reset' : 'Refresh'}
           onPress={this.refreshData}
@@ -43,9 +46,9 @@ class HomeScreen extends React.Component {
         <Text>Manufacturer Model name Price Quantity</Text>
         {this.state.data
           .filter(item => item.status !== 'deleted')
-          .map(item => (
+          .map((item, index) => (
             <Product
-              key={item.id}
+              key={index}
               item={item}
               update={this.updateProduct}
               navigation={this.props.navigation}
@@ -90,7 +93,6 @@ class HomeScreen extends React.Component {
     }));
   }
   updateProduct(item) {
-    console.log(item);
     var data = this.state.data;
     var oldItem = data.filter(x => x.id === item.id)[0];
     if (item.status === 'delete') {
