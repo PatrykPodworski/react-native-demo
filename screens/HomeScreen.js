@@ -44,6 +44,7 @@ class HomeScreen extends React.Component {
             item={item}
             update={this.updateProduct}
             navigation={this.props.navigation}
+            offline={this.state.offline}
           />
         ))}
       </View>

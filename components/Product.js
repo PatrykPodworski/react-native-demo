@@ -14,7 +14,8 @@ class Product extends React.Component {
     return (
       <View style={styles.row} key={item.id}>
         <Text>
-          {item.manufacturer} {item.modelName} {item.price} {item.quantity}
+          {item.manufacturer} {item.modelName} {item.price}{' '}
+          {item.quantity + (item.delta || 0)}
         </Text>
         <View style={styles.buttons}>
           <Button title="+" onPress={this.incrementProduct} />
@@ -31,26 +32,38 @@ class Product extends React.Component {
 
   incrementProduct() {
     var item = this.props.item;
-    fetch(`http://10.0.75.1/api/products/${item.id}?value=1`, {
-      method: 'POST',
-    })
-      .then(() => {
-        item.quantity++;
-        this.props.update(item);
+
+    if (this.props.offline) {
+      item.delta = item.delta + 1 || 1;
+      this.props.update(item);
+    } else {
+      fetch(`http://10.0.75.1/api/products/${item.id}?value=1`, {
+        method: 'POST',
       })
-      .catch(err => console.log(err));
+        .then(() => {
+          item.quantity++;
+          this.props.update(item);
+        })
+        .catch(err => console.log(err));
+    }
   }
 
   decrementProduct() {
     var item = this.props.item;
-    fetch(`http://10.0.75.1/api/products/${item.id}?value=-1`, {
-      method: 'POST',
-    })
-      .then(() => {
-        item.quantity--;
-        this.props.update(item);
+
+    if (this.props.offline) {
+      item.delta = item.delta - 1 || -1;
+      this.props.update(item);
+    } else {
+      fetch(`http://10.0.75.1/api/products/${item.id}?value=-1`, {
+        method: 'POST',
       })
-      .catch(err => console.log(err));
+        .then(() => {
+          item.quantity--;
+          this.props.update(item);
+        })
+        .catch(err => console.log(err));
+    }
   }
 
   deleteProduct() {
