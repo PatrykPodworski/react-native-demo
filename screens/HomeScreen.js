@@ -1,5 +1,6 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Text, View, Button} from 'react-native';
+import Product from '../components/Product';
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -23,8 +24,10 @@ class HomeScreen extends React.Component {
 
     return (
       <View>
+        <Button title="Add new product" />
+        <Text>Manufacturer Model name Price Quantity</Text>
         {this.state.data.map(item => (
-          <Text key={item.id}>{item.modelName}</Text>
+          <Product item={item} />
         ))}
       </View>
     );
