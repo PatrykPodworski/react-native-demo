@@ -68,7 +68,6 @@ class HomeScreen extends React.Component {
 
   loadProducts() {
     AsyncStorage.getItem('products').then(value => {
-      console.log(JSON.parse(value));
       this.setState({data: JSON.parse(value), isLoading: false});
     });
   }

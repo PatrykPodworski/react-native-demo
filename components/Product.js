@@ -22,7 +22,9 @@ class Product extends React.Component {
           <Button title="-" onPress={this.decrementProduct} />
           <Button
             title="Edit"
-            onPress={() => navigate('Product', {item: item})}
+            onPress={() =>
+              navigate('Product', {item: item, offline: this.props.offline})
+            }
           />
           <Button title="Delete" onPress={this.deleteProduct} />
         </View>
@@ -35,7 +37,6 @@ class Product extends React.Component {
 
     if (this.props.offline) {
       item.delta = item.delta + 1 || 1;
-      item.status = 'changed';
       this.props.update(item);
     } else {
       fetch(`http://10.0.75.1/api/products/${item.id}?value=1`, {
@@ -54,7 +55,6 @@ class Product extends React.Component {
 
     if (this.props.offline) {
       item.delta = item.delta - 1 || -1;
-      item.status = 'changed';
       this.props.update(item);
     } else {
       fetch(`http://10.0.75.1/api/products/${item.id}?value=-1`, {
