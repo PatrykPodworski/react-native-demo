@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Button} from 'react-native';
+import {Text, View, Button, AsyncStorage} from 'react-native';
 import Product from '../components/Product';
 
 class HomeScreen extends React.Component {
@@ -11,13 +11,18 @@ class HomeScreen extends React.Component {
     super(props);
     this.state = {
       isLoading: true,
+      offline: true,
       data: [],
     };
     this.getProducts = this.getProducts.bind(this);
     this.updateProduct = this.updateProduct.bind(this);
+    this.loadProducts = this.loadProducts.bind(this);
+    this.refreshData = this.refreshData.bind(this);
+    this.toggleMode = this.toggleMode.bind(this);
 
-    this.getProducts();
+    this.refreshData();
   }
+
   render() {
     const {navigate} = this.props.navigation;
     if (this.state.isLoading) {
@@ -26,8 +31,12 @@ class HomeScreen extends React.Component {
 
     return (
       <View>
+        <Button
+          title={this.state.offline ? 'Offline' : 'Online'}
+          onPress={this.toggleMode}
+        />
         <Button title="Add new product" onPress={() => navigate('Product')} />
-        <Button title="Refresh" onPress={this.getProducts} />
+        <Button title="Refresh" onPress={this.refreshData} />
         <Text>Manufacturer Model name Price Quantity</Text>
         {this.state.data.map(item => (
           <Product
@@ -47,10 +56,34 @@ class HomeScreen extends React.Component {
       .then(resp => resp.json())
       .then(resp => {
         this.setState({data: resp, isLoading: false});
-      })
-      .catch(err => console.log(err));
+        AsyncStorage.setItem('products', JSON.stringify(resp));
+      });
   }
 
+  loadProducts() {
+    AsyncStorage.getItem('products').then(value => {
+      console.log(JSON.parse(value));
+      this.setState({data: JSON.parse(value), isLoading: false});
+    });
+  }
+
+  refreshData() {
+    if (this.state.offline) {
+      this.loadProducts();
+      return;
+    }
+    this.getProducts();
+  }
+
+  toggleMode() {
+    if (!this.state.offline) {
+      AsyncStorage.setItem('products', JSON.stringify(this.state.data));
+    }
+
+    this.setState(prevState => ({
+      offline: !prevState.offline,
+    }));
+  }
   updateProduct(item) {
     console.log(item);
     var data = this.state.data;
