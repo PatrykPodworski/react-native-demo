@@ -35,6 +35,7 @@ class Product extends React.Component {
 
     if (this.props.offline) {
       item.delta = item.delta + 1 || 1;
+      item.status = 'changed';
       this.props.update(item);
     } else {
       fetch(`http://10.0.75.1/api/products/${item.id}?value=1`, {
@@ -53,6 +54,7 @@ class Product extends React.Component {
 
     if (this.props.offline) {
       item.delta = item.delta - 1 || -1;
+      item.status = 'changed';
       this.props.update(item);
     } else {
       fetch(`http://10.0.75.1/api/products/${item.id}?value=-1`, {
