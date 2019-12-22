@@ -19,6 +19,7 @@ class HomeScreen extends React.Component {
     this.loadProducts = this.loadProducts.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.toggleMode = this.toggleMode.bind(this);
+    this.synchronizeData = this.synchronizeData.bind(this);
 
     this.refreshData();
   }
@@ -39,10 +40,7 @@ class HomeScreen extends React.Component {
           title="Add new product"
           onPress={() => navigate('Product', {offline: this.state.offline})}
         />
-        <Button
-          title={this.state.offline ? 'Reset' : 'Refresh'}
-          onPress={this.refreshData}
-        />
+        <Button title="Refresh" onPress={this.refreshData} />
         <Text>Manufacturer Model name Price Quantity</Text>
         {this.state.data
           .filter(item => item.status !== 'deleted')
@@ -86,6 +84,8 @@ class HomeScreen extends React.Component {
   toggleMode() {
     if (!this.state.offline) {
       AsyncStorage.setItem('products', JSON.stringify(this.state.data));
+    } else {
+      this.synchronizeData();
     }
 
     this.setState(prevState => ({
@@ -102,6 +102,29 @@ class HomeScreen extends React.Component {
     }
 
     this.setState({data: data});
+    if (this.state.offline) {
+      AsyncStorage.setItem('products', JSON.stringify(this.state.data));
+    }
+  }
+
+  synchronizeData() {
+    var items = this.state.data.filter(
+      x => x.status != null || x.delta != null,
+    );
+    if (items.length === 0) {
+      return;
+    }
+    fetch('http://10.0.75.1/api/products/synchronize', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(items),
+    })
+      .then(resp => {
+        this.refreshData();
+      })
+      .catch(err => console.log(err));
   }
 }
 

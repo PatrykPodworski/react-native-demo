@@ -85,7 +85,7 @@ class ProductsScreen extends React.Component {
     if (this.state.offline) {
       AsyncStorage.getItem('products').then(value => {
         var data = JSON.parse(value);
-        item.status = 'edited';
+        item.status = 'created';
         item.quantity = 0;
         data.push(item);
         AsyncStorage.setItem('products', JSON.stringify(data));
