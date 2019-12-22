@@ -14,6 +14,7 @@ class HomeScreen extends React.Component {
       data: [],
     };
     this.getProducts = this.getProducts.bind(this);
+    this.updateProduct = this.updateProduct.bind(this);
 
     this.getProducts();
   }
@@ -27,7 +28,7 @@ class HomeScreen extends React.Component {
         <Button title="Add new product" />
         <Text>Manufacturer Model name Price Quantity</Text>
         {this.state.data.map(item => (
-          <Product item={item} />
+          <Product item={item} update={this.updateProduct} />
         ))}
       </View>
     );
@@ -41,6 +42,13 @@ class HomeScreen extends React.Component {
         console.log(this.state.data);
       })
       .catch(err => console.log(err));
+  }
+
+  updateProduct(item) {
+    var data = this.state.data;
+    var oldItem = data.filter(x => x.id === item.id)[0];
+    data[data.indexOf(oldItem)] = item;
+    this.setState({data: data});
   }
 }
 
