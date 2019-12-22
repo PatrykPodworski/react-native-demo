@@ -8,20 +8,33 @@ class ProductsScreen extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      isLoading: true,
+      data: [],
+    };
+    this.getProducts = this.getProducts.bind(this);
 
-    this.getRole = this.getRole.bind(this);
-
-    this.accessToken = this.props.navigation.getParam('accessToken', null);
-    console.debug(this.accessToken);
-
-    this.getRole();
+    this.getProducts();
   }
   render() {
-    return <Button title="Add new product" />;
+    if (this.state.isLoading) {
+      return <p>Loading</p>;
+    }
+
+    return (
+      <ul>
+        {this.state.data.map(item => (
+          <li key={item.id}>item.modelName</li>
+        ))}
+      </ul>
+    );
   }
 
-  getRole() {
-    console.debug('getRole');
+  getProducts() {
+    fetch('http://192.168.0.54/api/products').then(resp => {
+      console.log(this.state.data);
+      this.setState({data: resp, isLoading: false});
+    });
   }
 }
 
