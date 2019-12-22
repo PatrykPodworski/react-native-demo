@@ -9,6 +9,7 @@ class Product extends React.Component {
     this.deleteProduct = this.deleteProduct.bind(this);
   }
   render() {
+    const {navigate} = this.props.navigation;
     var item = this.props.item;
     return (
       <View style={styles.row} key={item.id}>
@@ -18,7 +19,10 @@ class Product extends React.Component {
         <View style={styles.buttons}>
           <Button title="+" onPress={this.incrementProduct} />
           <Button title="-" onPress={this.decrementProduct} />
-          <Button title="Edit" />
+          <Button
+            title="Edit"
+            onPress={() => navigate('Product', {item: item})}
+          />
           <Button title="Delete" onPress={this.deleteProduct} />
         </View>
       </View>
@@ -27,7 +31,7 @@ class Product extends React.Component {
 
   incrementProduct() {
     var item = this.props.item;
-    fetch(`http://192.168.0.54/api/products/${item.id}?value=1`, {
+    fetch(`http://10.0.75.1/api/products/${item.id}?value=1`, {
       method: 'POST',
     })
       .then(() => {
@@ -39,7 +43,7 @@ class Product extends React.Component {
 
   decrementProduct() {
     var item = this.props.item;
-    fetch(`http://192.168.0.54/api/products/${item.id}?value=-1`, {
+    fetch(`http://10.0.75.1/api/products/${item.id}?value=-1`, {
       method: 'POST',
     })
       .then(() => {
@@ -51,7 +55,7 @@ class Product extends React.Component {
 
   deleteProduct() {
     var item = this.props.item;
-    fetch(`http://192.168.0.54/api/products/${item.id}`, {
+    fetch(`http://10.0.75.1/api/products/${item.id}`, {
       method: 'DELETE',
     })
       .then(() => {

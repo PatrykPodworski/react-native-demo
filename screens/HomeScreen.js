@@ -19,21 +19,23 @@ class HomeScreen extends React.Component {
     this.getProducts();
   }
   render() {
-    const {navigation} = this.props;
+    const {navigate} = this.props.navigation;
     if (this.state.isLoading) {
       return <Text>Loading</Text>;
     }
 
     return (
       <View>
-        <Button
-          title="Add new product"
-          onPress={() => navigation.navigate('Product')}
-        />
+        <Button title="Add new product" onPress={() => navigate('Product')} />
         <Button title="Refresh" onPress={this.getProducts} />
         <Text>Manufacturer Model name Price Quantity</Text>
         {this.state.data.map(item => (
-          <Product key={item.id} item={item} update={this.updateProduct} />
+          <Product
+            key={item.id}
+            item={item}
+            update={this.updateProduct}
+            navigation={this.props.navigation}
+          />
         ))}
       </View>
     );
@@ -41,7 +43,7 @@ class HomeScreen extends React.Component {
 
   getProducts() {
     this.setState({isLoading: true});
-    fetch('http://192.168.0.54/api/products')
+    fetch('http://10.0.75.1/api/products')
       .then(resp => resp.json())
       .then(resp => {
         this.setState({data: resp, isLoading: false});
