@@ -36,17 +36,22 @@ class HomeScreen extends React.Component {
           onPress={this.toggleMode}
         />
         <Button title="Add new product" onPress={() => navigate('Product')} />
-        <Button title="Refresh" onPress={this.refreshData} />
+        <Button
+          title={this.state.offline ? 'Reset' : 'Refresh'}
+          onPress={this.refreshData}
+        />
         <Text>Manufacturer Model name Price Quantity</Text>
-        {this.state.data.map(item => (
-          <Product
-            key={item.id}
-            item={item}
-            update={this.updateProduct}
-            navigation={this.props.navigation}
-            offline={this.state.offline}
-          />
-        ))}
+        {this.state.data
+          .filter(item => item.status !== 'deleted')
+          .map(item => (
+            <Product
+              key={item.id}
+              item={item}
+              update={this.updateProduct}
+              navigation={this.props.navigation}
+              offline={this.state.offline}
+            />
+          ))}
       </View>
     );
   }
@@ -89,7 +94,7 @@ class HomeScreen extends React.Component {
     console.log(item);
     var data = this.state.data;
     var oldItem = data.filter(x => x.id === item.id)[0];
-    if (item.status === 'deleted') {
+    if (item.status === 'delete') {
       delete data[data.indexOf(oldItem)];
     } else {
       data[data.indexOf(oldItem)] = item;

@@ -70,14 +70,19 @@ class Product extends React.Component {
 
   deleteProduct() {
     var item = this.props.item;
-    fetch(`http://10.0.75.1/api/products/${item.id}`, {
-      method: 'DELETE',
-    })
-      .then(() => {
-        item.status = 'deleted';
-        this.props.update(item);
+    if (this.props.offline) {
+      item.status = 'deleted';
+      this.props.update(item);
+    } else {
+      fetch(`http://10.0.75.1/api/products/${item.id}`, {
+        method: 'DELETE',
       })
-      .catch(err => console.log(err));
+        .then(() => {
+          item.status = 'delete';
+          this.props.update(item);
+        })
+        .catch(err => console.log(err));
+    }
   }
 }
 const styles = StyleSheet.create({
