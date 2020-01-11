@@ -11,7 +11,7 @@ class HomeScreen extends React.Component {
     super(props);
     this.state = {
       isLoading: true,
-      offline: true,
+      offline: false,
       data: [],
     };
     this.getProducts = this.getProducts.bind(this);
