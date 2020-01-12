@@ -67,7 +67,7 @@ class ProductsScreen extends React.Component {
     this.setState({modelName: text});
   }
   onchangePrice(text) {
-    var value = parseFloat(text);
+    var value = parseFloat(text) || 0;
     this.setState({price: value});
   }
 
