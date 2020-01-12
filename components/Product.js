@@ -1,5 +1,6 @@
 import React from 'react';
 import {Text, Button, View, StyleSheet} from 'react-native';
+import {getUniqueId} from 'react-native-device-info';
 
 class Product extends React.Component {
   constructor(props) {
@@ -7,6 +8,7 @@ class Product extends React.Component {
     this.incrementProduct = this.incrementProduct.bind(this);
     this.decrementProduct = this.decrementProduct.bind(this);
     this.deleteProduct = this.deleteProduct.bind(this);
+    this.changeQuantity = this.changeQuantity.bind(this);
   }
   render() {
     const {navigate} = this.props.navigation;
@@ -14,8 +16,7 @@ class Product extends React.Component {
     return (
       <View style={styles.row} key={item.id}>
         <Text>
-          {item.manufacturer} {item.modelName} {item.price}{' '}
-          {item.quantity + (item.delta || 0)}
+          {item.manufacturer} {item.modelName} {item.price} {item.quantity}
         </Text>
         <View style={styles.buttons}>
           <Button title="+" onPress={this.incrementProduct} />
@@ -33,17 +34,28 @@ class Product extends React.Component {
   }
 
   incrementProduct() {
-    var item = this.props.item;
+    this.changeQuantity(1);
+  }
 
+  changeQuantity(value) {
+    var item = this.props.item;
+    item.localSum = item.localSum + value || value;
+    console.log(item);
     if (this.props.offline) {
-      item.delta = item.delta + 1 || 1;
+      item.quantity += value;
       this.props.update(item);
     } else {
-      fetch(`http://10.0.75.1/api/products/${item.id}?value=1`, {
+      var deviceid = getUniqueId();
+      fetch(`http://10.0.75.1/api/products/${item.id}`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({value: value, deviceId: deviceid}),
       })
         .then(() => {
-          item.quantity++;
+          item.quantity += value;
+          item.localSum = item.localSum + value || value;
           this.props.update(item);
         })
         .catch(err => console.log(err));
@@ -51,21 +63,7 @@ class Product extends React.Component {
   }
 
   decrementProduct() {
-    var item = this.props.item;
-
-    if (this.props.offline) {
-      item.delta = item.delta - 1 || -1;
-      this.props.update(item);
-    } else {
-      fetch(`http://10.0.75.1/api/products/${item.id}?value=-1`, {
-        method: 'POST',
-      })
-        .then(() => {
-          item.quantity--;
-          this.props.update(item);
-        })
-        .catch(err => console.log(err));
-    }
+    this.changeQuantity(-1);
   }
 
   deleteProduct() {

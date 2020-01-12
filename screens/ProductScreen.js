@@ -87,7 +87,6 @@ class ProductsScreen extends React.Component {
         var data = JSON.parse(value);
         item.id =
           Math.max(...data.map(x => x.id).filter(x => Number.isInteger(x))) + 1;
-        console.log(item.id);
         item.status = 'created';
         item.quantity = 0;
         data.push(item);

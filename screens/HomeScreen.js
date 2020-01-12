@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, View, Button, AsyncStorage} from 'react-native';
 import Product from '../components/Product';
+import {getUniqueId} from 'react-native-device-info';
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -59,7 +60,7 @@ class HomeScreen extends React.Component {
 
   getProducts() {
     this.setState({isLoading: true});
-    fetch('http://10.0.75.1/api/products')
+    fetch(`http://10.0.75.1/api/products?deviceId=${getUniqueId()}`)
       .then(resp => resp.json())
       .then(resp => {
         this.setState({data: resp, isLoading: false});
@@ -109,13 +110,11 @@ class HomeScreen extends React.Component {
   }
 
   synchronizeData() {
-    var items = this.state.data.filter(
-      x => x.status != null || x.delta != null,
-    );
+    var items = this.state.data;
     if (items.length === 0) {
       return;
     }
-    fetch('http://10.0.75.1/api/products/synchronize', {
+    fetch(`http://10.0.75.1/api/products/synchronize/${getUniqueId()}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
