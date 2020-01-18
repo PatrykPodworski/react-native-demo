@@ -11,6 +11,7 @@ class ProductsScreen extends React.Component {
     this.onChangeManufacturer = this.onChangeManufacturer.bind(this);
     this.onChangeModelName = this.onChangeModelName.bind(this);
     this.onchangePrice = this.onchangePrice.bind(this);
+    this.onchangeColor = this.onchangeColor.bind(this);
     this.saveProduct = this.saveProduct.bind(this);
     this.createProduct = this.createProduct.bind(this);
     this.editProduct = this.editProduct.bind(this);
@@ -29,6 +30,7 @@ class ProductsScreen extends React.Component {
       this.state = {
         manufacturer: '',
         modelName: '',
+        color: '',
         price: 0,
         offline: offline,
       };
@@ -54,6 +56,11 @@ class ProductsScreen extends React.Component {
           value={this.state.price.toString()}
           onChangeText={text => this.onchangePrice(text)}
         />
+        <Text>Color</Text>
+        <TextInput
+          value={this.state.color.toString()}
+          onChangeText={text => this.onchangeColor(text)}
+        />
         <Button title="Save" onPress={this.saveProduct} />
         <Button title="Cancel" onPress={() => navigate('Home')} />
       </View>
@@ -69,6 +76,10 @@ class ProductsScreen extends React.Component {
   onchangePrice(text) {
     var value = parseFloat(text) || 0;
     this.setState({price: value});
+  }
+
+  onchangeColor(text) {
+    this.setState({color: text});
   }
 
   saveProduct() {

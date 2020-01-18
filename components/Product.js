@@ -16,7 +16,8 @@ class Product extends React.Component {
     return (
       <View style={styles.row} key={item.id}>
         <Text>
-          {item.manufacturer} {item.modelName} {item.price} {item.quantity}
+          {item.manufacturer} {item.modelName} {item.price} {item.quantity}{' '}
+          {item.color}
         </Text>
         <View style={styles.buttons}>
           <Button title="+" onPress={this.incrementProduct} />
