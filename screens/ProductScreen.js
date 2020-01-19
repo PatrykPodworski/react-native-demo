@@ -12,6 +12,7 @@ class ProductsScreen extends React.Component {
     this.onChangeModelName = this.onChangeModelName.bind(this);
     this.onchangePrice = this.onchangePrice.bind(this);
     this.onchangeColor = this.onchangeColor.bind(this);
+    this.onchangeWarehouse = this.onchangeWarehouse.bind(this);
     this.saveProduct = this.saveProduct.bind(this);
     this.createProduct = this.createProduct.bind(this);
     this.editProduct = this.editProduct.bind(this);
@@ -23,7 +24,9 @@ class ProductsScreen extends React.Component {
         id: item.id,
         manufacturer: item.manufacturer,
         modelName: item.modelName,
+        color: item.color || '',
         price: item.price,
+        warehouseId: item.warehouseId || 0,
         offline: offline,
       };
     } else {
@@ -32,6 +35,7 @@ class ProductsScreen extends React.Component {
         modelName: '',
         color: '',
         price: 0,
+        warehouseId: 0,
         offline: offline,
       };
     }
@@ -61,6 +65,11 @@ class ProductsScreen extends React.Component {
           value={this.state.color.toString()}
           onChangeText={text => this.onchangeColor(text)}
         />
+        <Text>WarehouseId</Text>
+        <TextInput
+          value={this.state.warehouseId.toString()}
+          onChangeText={text => this.onchangeWarehouse(text)}
+        />
         <Button title="Save" onPress={this.saveProduct} />
         <Button title="Cancel" onPress={() => navigate('Home')} />
       </View>
@@ -80,6 +89,11 @@ class ProductsScreen extends React.Component {
 
   onchangeColor(text) {
     this.setState({color: text});
+  }
+
+  onchangeWarehouse(text) {
+    var value = parseFloat(text) || 0;
+    this.setState({warehouseId: value});
   }
 
   saveProduct() {

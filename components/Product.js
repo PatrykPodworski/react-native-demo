@@ -9,6 +9,8 @@ class Product extends React.Component {
     this.decrementProduct = this.decrementProduct.bind(this);
     this.deleteProduct = this.deleteProduct.bind(this);
     this.changeQuantity = this.changeQuantity.bind(this);
+
+    console.log(this.props.item);
   }
   render() {
     const {navigate} = this.props.navigation;

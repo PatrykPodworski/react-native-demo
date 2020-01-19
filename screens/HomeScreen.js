@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, View, Button, AsyncStorage} from 'react-native';
-import Product from '../components/Product';
+import Warehouse from '../components/Warehouse';
 import {getUniqueId} from 'react-native-device-info';
 
 class HomeScreen extends React.Component {
@@ -42,25 +42,21 @@ class HomeScreen extends React.Component {
           onPress={() => navigate('Product', {offline: this.state.offline})}
         />
         <Button title="Refresh" onPress={this.refreshData} />
-        <Text>Manufacturer Model name Price Quantity</Text>
-        {this.state.data
-          .filter(item => item.status !== 'deleted')
-          .map((item, index) => (
-            <Product
-              key={index}
-              item={item}
-              update={this.updateProduct}
-              navigation={this.props.navigation}
-              offline={this.state.offline}
-            />
-          ))}
+        {this.state.data.map(warehouse => (
+          <Warehouse
+            warehouse={warehouse}
+            update={this.updateProduct}
+            navigation={this.props.navigation}
+            offline={this.state.offline}
+          />
+        ))}
       </View>
     );
   }
 
   getProducts() {
     this.setState({isLoading: true});
-    fetch(`http://10.0.75.1/api/products?deviceId=${getUniqueId()}`)
+    fetch(`http://10.0.75.1/api/products/warehouses?deviceId=${getUniqueId()}`)
       .then(resp => resp.json())
       .then(resp => {
         this.setState({data: resp, isLoading: false});
