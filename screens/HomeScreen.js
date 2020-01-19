@@ -89,24 +89,25 @@ class HomeScreen extends React.Component {
       offline: !prevState.offline,
     }));
   }
-  updateProduct(item) {
-    console.log(item);
-    var data = this.state.data;
-    var oldItem = data.filter(x => x.id === item.id)[0];
+  updateProduct(item, warehouseId) {
+    var state = this.state.data;
+    var products = state.find(x => x.warehouseId === warehouseId).products;
+    var oldItem = products.filter(x => x.id === item.id)[0];
     if (item.status === 'delete') {
-      delete data[data.indexOf(oldItem)];
+      delete products[products.indexOf(oldItem)];
     } else {
-      data[data.indexOf(oldItem)] = item;
+      products[products.indexOf(oldItem)] = item;
     }
 
-    this.setState({data: data});
+    this.setState({data: state});
     if (this.state.offline) {
       AsyncStorage.setItem('products', JSON.stringify(this.state.data));
     }
   }
 
   synchronizeData() {
-    var items = this.state.data;
+    var items = this.state.data.map(x => x.products).flat();
+    console.log(items);
     if (items.length === 0) {
       return;
     }

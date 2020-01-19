@@ -9,8 +9,6 @@ class Product extends React.Component {
     this.decrementProduct = this.decrementProduct.bind(this);
     this.deleteProduct = this.deleteProduct.bind(this);
     this.changeQuantity = this.changeQuantity.bind(this);
-
-    console.log(this.props.item);
   }
   render() {
     const {navigate} = this.props.navigation;
@@ -43,7 +41,6 @@ class Product extends React.Component {
   changeQuantity(value) {
     var item = this.props.item;
     item.localSum = item.localSum + value || value;
-    console.log(item);
     if (this.props.offline) {
       item.quantity += value;
       this.props.update(item);
